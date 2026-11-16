@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>VOLT KICK - Demo Online</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#030b18;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none}
+#ui{position:fixed;inset:0;pointer-events:none}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 3%;background:#041526cc;gap:10px}
+.logo{font-weight:900;letter-spacing:2px;font-size:22px}
+.logo b{color:#42edff}
+.score{font-size:clamp(16px,3vw,31px);background:#092139;border:1px solid #37bacc;border-radius:12px;padding:10px 20px}
+.score span{color:#43e8ff}
+.score em{color:#ff8969;font-style:normal}
+.clock{background:#092139;border:1px solid #668094;border-radius:10px;padding:10px}
+.info{position:absolute;bottom:12px;width:100%;text-align:center;color:#a7c6d8;font-size:12px}
+#banner{position:absolute;top:25%;width:100%;text-align:center;font-size:clamp(28px,6vw,65px);font-weight:900;text-shadow:0 4px 20px #000;opacity:0}
+#banner.show{opacity:1}
+#panel{position:absolute;inset:0;background:#031020e8;display:grid;place-content:center;text-align:center;pointer-events:auto;padding:20px}
+#panel h1{font-size:clamp(42px,9vw,90px);color:#42edff;margin:0}
+#panel p{max-width:540px;line-height:1.6;color:#b6d5e5}
+#play{background:#42edff;color:#042033;font-size:22px;font-weight:900;padding:20px;border:0;border-radius:12px;cursor:pointer}
+.touch{display:none;position:absolute;bottom:20px;width:100%;justify-content:space-between;padding:0 15px;pointer-events:auto}
+.touch button{background:#09243bd9;color:white;border:1px solid #4ce5ff;border-radius:12px;min-width:48px;min-height:48px;touch-action:none}
+.dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:2px}
+.up{grid-column:2;grid-row:1}
+.left{grid-column:1;grid-row:2}
+.right{grid-column:3;grid-row:2}
+.down{grid-column:2;grid-row:3}
+.actions{display:flex;align-items:end;gap:7px}
+@media(pointer:coarse){.touch{display:flex}.info{display:none}.logo{font-size:13px}.score{padding:8px}.clock{padding:8px}}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="ui">
+<header>
+<div class="logo"><b>VOLT</b> KICK</div>
+<div class="score"><span>NEÓN</span> <strong id="a">0</strong> : <strong id="b">0</strong> <em>BLAZE</em></div>
+<div class="clock" id="clock">02:30</div>
+</header>
+<div id="banner"></div>
+<div class="info">FLECHAS / WASD: MOVER · Z: PASE · X: TIRO · C: CAMBIAR · SHIFT: TURBO · E: SUPERDISPARO</div>
+<div id="panel">
+<h1>VOLT KICK</h1>
+<p>Fútbol arcade entre NEÓN y BLAZE. Controla a tus jugadores, pasa, dispara y marca goles. El equipo que recibe el gol realiza el siguiente saque.</p>
+<button id="play">JUGAR PARTIDO</button>
+</div>
+<div class="touch">
+<div class="dpad">
+<button class="up" data-k="arrowup">▲</button>
+<button class="left" data-k="arrowleft">◀</button>
+<button class="right" data-k="arrowright">▶</button>
+<button class="down" data-k="arrowdown">▼</button>
+</div>
+<div class="actions">
+<button data-k="c">CAMBIO</button>
+<button data-k="z">PASE</button>
+<button data-k="x">TIRO</button>
+<button data-k="e">VOLT</button>
+</div>
+</div>
+</div>
+<script>
+'use strict';
+const canvas=document.querySelector('#game');
+const g=canvas.getContext('2d');
+const A=document.querySelector('#a');
+const B=document.querySelector('#b');
+const CLOCK=document.querySelector('#clock');
+const BANNER=document.querySelector('#banner');
+const PANEL=document.querySelector('#panel');
+let W=innerWidth,H=innerHeight,dpr=1;
+function resize(){
+ W=innerWidth;H=innerHeight;
+ dpr=Math.min(devicePixelRatio||1,2);
+ canvas.width=W*dpr;canvas.height=H*dpr;
+ g.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener('resize',resize);resize();
+const names=[['NOVA','AXEL','KAI','ORION'],['RAX','VESPER','TORQ','PYRO']];
+const F={l:70,r:930,t:95,b:565};
+const players=[];
+const ball={x:500,y:330,vx:0,vy:0,owner:null,lock:0};
+let selected=0,score=[0,0],time=150,playing=false,started=false;
+let superPower=0,goalWait=0,goalReceiver=0,messageEnd=0;
+let last=performance.now();
+const keys=new Set();
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function show(s,d=1.1){
+ BANNER.textContent=s;BANNER.classList.add('show');
+ messageEnd=performance.now()+d*1000;
+}
+function makePlayers(){
+ players.length=0;
+ for(let team=0;team<2;team++)for(let i=0;i<4;i++){
+ players.push({team,i,name:names[team][i],x:team===0?330:670,
+ y:[330,205,455,330][i],facing:team===0?1:-1,
+ pace:1+(i%3)*.1,power:1+(3-i)*.07,
+ goalie:i===3,cool:0,step:0});
+ }
+ players[3].x=105;players[7].x=895;
+}
+function kickoff(team){
+ makePlayers();
+ ball.x=500;ball.y=330;
+ ball.vx=ball.vy=0;
+ ball.owner=players[team*4];
+ ball.owner.x=team===0?478:522;
+ ball.owner.y=330;
+ ball.lock=.35;goalWait=0;selected=0;
+ show(team===0?'¡SACA NEÓN!':'¡SACA BLAZE!');
+}
+function reset(){
+ score=[0,0];A.textContent='0';B.textContent='0';
+ time=150;superPower=0;kickoff(0);
+}
+function start(){
+ if(!started||time<=0)reset();
+ started=true;playing=true;PANEL.style.display='none';
+}
+function finish(){
+ playing=false;started=false;
+ PANEL.style.display='grid';
+ PANEL.querySelector('p').textContent=
+ `Final: NEÓN ${score[0]} - ${score[1]} BLAZE. ¡Juega otra vez!`;
+ document.querySelector('#play').textContent='VOLVER A JUGAR';
+}
+document.querySelector('#play').onclick=start;
+function pick(p){
+ if(ball.lock>0||ball.owner)return;
+ ball.owner=p;ball.vx=ball.vy=0;
+ if(p.team===0&&!p.goalie)selected=players.indexOf(p);
+}
+function release(p,vx,vy){
+ if(ball.owner!==p)return;
+ ball.owner=null;
+ ball.x=p.x+p.facing*16;ball.y=p.y;
+ ball.vx=vx;ball.vy=vy;ball.lock=.22;
+}
+function pass(){
+ const p=ball.owner;
+ if(!p||p.team!==0)return;
+ let mates=players.filter(q=>q.team===0&&!q.goalie&&q!==p)
+ .sort((a,b)=>dist(a,p)-dist(b,p));
+ const q=mates[0];if(!q)return;
+ let dx=q.x-p.x,dy=q.y-p.y,m=Math.hypot(dx,dy)||1;
+ release(p,dx/m*460,dy/m*460);
+ selected=players.indexOf(q);
+ superPower=clamp(superPower+12,0,100);
+}
+function shoot(p,hyper=false){
+ if(ball.owner!==p)return;
+ const goalX=p.team===0?960:40;
+ const gy=330+(Math.random()-.5)*(hyper?20:85);
+ let dx=goalX-p.x,dy=gy-p.y,m=Math.hypot(dx,dy)||1;
+ release(p,dx/m*(hyper?850:630*p.power),
+ dy/m*(hyper?850:630*p.power));
+ if(p.team===0){
+ superPower=hyper?0:clamp(superPower+13,0,100);
+ show(hyper?'⚡ VOLT STRIKE!':'¡DISPARO!',.5);
+ }
+}
+function switchPlayer(){
+ if(ball.owner?.team===0){
+ selected=players.indexOf(ball.owner);return;
+ }
+ const eligible=players.map((p,i)=>({p,i}))
+ .filter(o=>o.p.team===0&&!o.p.goalie&&o.i!==selected)
+ .sort((a,b)=>dist(a.p,ball)-dist(b.p,ball));
+ if(eligible.length)selected=eligible[0].i;
+}
+function goal(scoring){
+ score[scoring]++;
+ A.textContent=score[0];B.textContent=score[1];
+ goalReceiver=1-scoring;
+ goalWait=1.9;
+ ball.owner=null;ball.vx=ball.vy=0;
+ show(scoring===0?'¡GOL DE NEÓN!':'¡GOL DE BLAZE!',1.8);
+}
+function act(k){
+ if(k==='z')pass();
+ if(k==='x'&&ball.owner?.team===0)shoot(ball.owner);
+ if(k==='c')switchPlayer();
+ if(k==='e'&&superPower>=100&&ball.owner?.team===0)
+ shoot(ball.owner,true);
+}
+addEventListener('keydown',e=>{
+ let k=e.key.toLowerCase();
+ if(k.startsWith('arrow')||'z x c e'.split(' ').includes(k))
+ e.preventDefault();
+ if(!keys.has(k)&&playing)act(k);
+ keys.add(k);
+});
+addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+addEventListener('blur',()=>keys.clear());
+for(let el of document.querySelectorAll('[data-k]')){
+ const k=el.dataset.k;
+ el.addEventListener('pointerdown',e=>{
+ e.preventDefault();keys.add(k);
+ if(playing)act(k);
+ el.setPointerCapture(e.pointerId);
+ });
+ el.addEventListener('pointerup',()=>keys.delete(k));
+ el.addEventListener('pointercancel',()=>keys.delete(k));
+}
+function walk(p,dx,dy,dt,speed){
+ let m=Math.hypot(dx,dy);
+ if(m>1){
+ p.x=clamp(p.x+dx/m*speed*dt,F.l+8,F.r-8);
+ p.y=clamp(p.y+dy/m*speed*dt,F.t+8,F.b-8);
+ p.step+=dt*12;
+ p.facing=dx>0?1:dx<0?-1:p.facing;
+ }
+}
+function ai(dt){
+ const c=players[selected],owner=ball.owner;
+ for(let p of players){
+ p.cool=Math.max(0,p.cool-dt);
+ if(p===c)continue;
+ if(p.goalie){
+ p.x=p.team===0?105:895;
+ p.y+=clamp(ball.y-p.y,-120*dt,120*dt);
+ p.y=clamp(p.y,280,380);
+ continue;
+ }
+ const teamOwn=owner?.team===p.team;
+ let tx,ty;
+ if(owner===p){
+ tx=p.team===0?875:125;
+ ty=330+(p.i-1)*25;
+ if(Math.abs(tx-p.x)<165&&p.cool<=0){
+ shoot(p);p.cool=1.2;
+ }
+ }else if(!owner||owner.team!==p.team){
+ const side=players.filter(q=>q.team===p.team&&!q.goalie);
+ const hunter=side.reduce((a,b)=>dist(a,ball)<dist(b,ball)?a:b);
+ tx=hunter===p?ball.x:p.team===0?330:670;
+ ty=hunter===p?ball.y:330+(p.i-1)*110;
+ }else{
+ tx=p.team===0?550:450;
+ ty=330+(p.i-1)*105;
+ }
+ walk(p,tx-p.x,ty-p.y,dt,(teamOwn?152:142)*p.pace);
+ }
+}
+function tick(dt){
+ if(!playing)return;
+ if(goalWait>0){
+ goalWait-=dt;
+ if(goalWait<=0)kickoff(goalReceiver);
+ return;
+ }
+ time-=dt;
+ if(time<=0){time=0;finish();return}
+ ball.lock=Math.max(0,ball.lock-dt);
+ const p=players[selected];
+ let dx=0,dy=0;
+ if(keys.has('arrowleft')||keys.has('a'))dx--;
+ if(keys.has('arrowright')||keys.has('d'))dx++;
+ if(keys.has('arrowup')||keys.has('w'))dy--;
+ if(keys.has('arrowdown')||keys.has('s'))dy++;
+ walk(p,dx,dy,dt,(keys.has('shift')?255:180)*p.pace);
+ ai(dt);
+ if(ball.owner){
+ ball.x=ball.owner.x+ball.owner.facing*14;
+ ball.y=ball.owner.y+10;
+ }else{
+ ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+ ball.vx*=Math.pow(.98,dt*60);
+ ball.vy*=Math.pow(.98,dt*60);
+ }
+ if(!ball.owner){
+ if(ball.y<F.t||ball.y>F.b){
+ ball.y=clamp(ball.y,F.t,F.b);ball.vy*=-.7;
+ }
+ if((ball.x<F.l||ball.x>F.r)&&Math.abs(ball.y-330)<68){
+ goal(ball.x>F.r?0:1);return;
+ }
+ if(ball.x<F.l||ball.x>F.r){
+ ball.x=clamp(ball.x,F.l,F.r);ball.vx*=-.7;
+ }
+ }
+ if(ball.lock<=0){
+ for(let q of players){
+ if(dist(q,ball)<(q.goalie?33:23)){
+ if(ball.owner===null)pick(q);
+ else if(q.team!==ball.owner.team&&q.cool<=0&&
+ dist(q,ball.owner)<22){
+ ball.owner=q;q.cool=1.4;
+ if(q.team===0)superPower=clamp(superPower+20,0,100);
+ }
+ break;
+ }
+ }
+ }
+ CLOCK.textContent=
+ `${String(Math.floor(time/60)).padStart(2,'0')}:${String(Math.floor(time%60)).padStart(2,'0')}`;
+}
+function ellipse(x,y,rx,ry,color){
+ g.fillStyle=color;g.beginPath();
+ g.ellipse(x,y,rx,ry,0,0,Math.PI*2);g.fill();
+}
+function line(x,y,X,Y,color='#76c3c9',w=2){
+ g.strokeStyle=color;g.lineWidth=w;
+ g.beginPath();g.moveTo(x,y);g.lineTo(X,Y);g.stroke();
+}
+let X=0,Y=0,S=1;
+function mapX(x){return X+(x-500)*S}
+function mapY(y){return Y+(y-330)*S*.73}
+function drawPlayer(p){
+ const s=Math.min(W/1100,H/740);
+ const x=mapX(p.x),y=mapY(p.y);
+ const size=clamp(s*21,10,26);
+ ellipse(x,y+size*.7,size*.7,size*.25,'#0009');
+ const col=p.goalie?'#f8da61':p.team===0?'#36e8f7':'#ff7855';
+ g.save();g.translate(x,y);
+ g.fillStyle='#1b2639';
+ g.fillRect(-size*.48,size*.25,size*.3,size*.67);
+ g.fillRect(size*.18,size*.25,size*.3,size*.67);
+ let grad=g.createLinearGradient(-size,0,size,0);
+ grad.addColorStop(0,'#11213a');
+ grad.addColorStop(.42,col);
+ grad.addColorStop(1,'#123a48');
+ g.fillStyle=grad;g.beginPath();
+ g.roundRect(-size*.55,-size*.6,size*1.1,size*1.1,size*.22);
+ g.fill();
+ g.fillStyle='#dd9d72';
+ g.fillRect(-size*.72,-size*.31,size*.2,size*.55);
+ g.fillRect(size*.52,-size*.31,size*.2,size*.55);
+ ellipse(0,-size*.82,size*.4,size*.44,'#efc19d');
+ g.fillStyle='#22314a';
+ g.beginPath();
+ g.arc(0,-size*.98,size*.43,Math.PI,Math.PI*2);g.fill();
+ g.fillStyle='#071527';
+ g.font=`900 ${size*.42}px system-ui`;
+ g.textAlign='center';
+ g.fillText(p.i+7,0,size*.12);
+ g.restore();
+ if(players[selected]===p){
+ g.strokeStyle='#4affee';g.lineWidth=3;
+ g.beginPath();
+ g.ellipse(x,y+size*.85,size*.95,size*.32,0,0,Math.PI*2);
+ g.stroke();
+ }
+ g.textAlign='center';g.fillStyle='white';
+ g.font=`bold ${Math.max(9,size*.42)}px system-ui`;
+ g.fillText(p.name,x,y-size*1.48);
+}
+function draw(){
+ g.clearRect(0,0,W,H);
+ let grad=g.createLinearGradient(0,0,0,H);
+ grad.addColorStop(0,'#020916');
+ grad.addColorStop(1,'#09243b');
+ g.fillStyle=grad;g.fillRect(0,0,W,H);
+ S=Math.min(W/1130,H/760);
+ X=W/2;Y=H*.54;
+ const x=mapX(F.l),right=mapX(F.r);
+ const top=mapY(F.t),bot=mapY(F.b);
+ g.fillStyle='#072a39';
+ g.fillRect(x-25,top-26,right-x+50,bot-top+52);
+ for(let i=0;i<8;i++){
+ g.fillStyle=i%2?'#085061':'#074454';
+ let a=mapX(F.l+(F.r-F.l)*i/8);
+ let b=mapX(F.l+(F.r-F.l)*(i+1)/8);
+ g.fillRect(a,top,b-a,bot-top);
+ }
+ g.strokeStyle='#9de9e9';g.lineWidth=2;
+ g.strokeRect(x,top,right-x,bot-top);
+ line(X,top,X,bot,'#c5ffff',2);
+ g.beginPath();
+ g.ellipse(X,Y,75*S,75*S*.73,0,0,Math.PI*2);g.stroke();
+ g.strokeRect(x,mapY(245),120*S,170*S*.73);
+ g.strokeRect(right-120*S,mapY(245),120*S,170*S*.73);
+ for(let side of [-1,1]){
+ const gx=side<0?x:right;
+ g.fillStyle='#010f1a';
+ g.fillRect(gx+(side<0?-35*S:0),Y-47*S,35*S,94*S);
+ g.strokeStyle='#fff';
+ g.strokeRect(gx+(side<0?-35*S:0),Y-47*S,35*S,94*S);
+ }
+ players.slice().sort((a,b)=>a.y-b.y).forEach(drawPlayer);
+ const bx=mapX(ball.x),by=mapY(ball.y);
+ ellipse(bx,by+7*S,13*S,5*S,'#0009');
+ ellipse(bx,by,10*S,10*S,'#fff');
+ ellipse(bx-3*S,by-3*S,3*S,3*S,'#24394b');
+ g.textAlign='center';
+ if(superPower>=100){
+ g.fillStyle='#4ffcff';g.font='900 22px system-ui';
+ g.fillText('SUPERDISPARO LISTO (E)',X,H-40);
+ }else{
+ g.fillStyle='#8fa9bc';g.font='700 13px system-ui';
+ g.fillText('ENERGÍA VOLT '+Math.floor(superPower)+'%',X,H-35);
+ }
+ if(performance.now()>messageEnd)BANNER.classList.remove('show');
+}
+function frame(now){
+ let dt=Math.min(.035,(now-last)/1000);
+ last=now;tick(dt);draw();
+ requestAnimationFrame(frame);
+}
+makePlayers();kickoff(0);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
