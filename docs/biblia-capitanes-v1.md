@@ -10,7 +10,7 @@
 - Prioridad: capitanes, no cambiar estadio ni afición durante esta fase.
 
 ## 1. NEÓN — «EL RELÁMPAGO» (capitán rápido)
-- **Nombre provisional:** Raiden Vox
+- **Nombre provisional:** Kairo Flux
 - **Identidad:** poder de rayo, aceleración explosiva.
 - **Silueta:** delantero atlético de torso en V, armadura aerodinámica, cabello con puntas angulares, guantes ligeros.
 - **Colores:** cian eléctrico, azul noche, plata.
@@ -46,7 +46,7 @@
 - **Poder conceptual:** *Muro Boreal* (bloqueo/contención breve); pendiente balancear.
 
 ## 5. VORTEX — «EL ESTRATEGA» (capitán técnico)
-- **Nombre provisional:** Orion Nexus
+- **Nombre provisional:** Veyr Nexus
 - **Identidad:** gravedad, anticipación y precisión.
 - **Silueta:** complexión media, gesto seguro, peinado en trenzas, visor violeta, armadura asimétrica.
 - **Colores:** violeta, negro grafito, magenta.
