@@ -143,7 +143,7 @@ move(a,tx-a.x,tz-a.z,(own?5.3:a.goalie?5.5:4.6)*a.profile.pace*(a.team===RED?aiD
 function scoreGoal(right){pendingKickoff=right?RED:BLUE;score[right?0:1]++;blueEl.textContent=score[0];redEl.textContent=score[1];showBanner(right?'¡GOL DE NEÓN!':'¡GOL DE BLAZE!',2.3);burst(ball.x,1.9,ball.z,right?col.cyan:col.orange,100,16);sfx('goal');shake=.9;ball.owner=null;goalPause=2.3;for(let a of actors)if(a.team===(right?BLUE:RED))a.celebrate=2.3}
 function update(dt){if(!started)return;if(freeze>0){freeze-=dt;return;}shake=Math.max(0,shake-dt*1.5);hyperTimer=Math.max(0,hyperTimer-dt);for(let i=particleBurst.length-1;i>=0;i--){let p=particleBurst[i];p.life-=dt;p.vy-=7*dt;p.x+=p.vx*dt;p.y=Math.max(.1,p.y+p.vy*dt);p.z+=p.vz*dt;if(p.life<=0)particleBurst.splice(i,1);}if(goalPause>0){goalPause-=dt;if(goalPause<=0)reset(pendingKickoff);return}time-=dt;if(time<=0){time=0;finished=true;pause();return}tackleWait=Math.max(0,tackleWait-dt);for(let a of actors)a.slideTimer=Math.max(0,a.slideTimer-dt);ball.lock=Math.max(0,ball.lock-dt);
 let mx=0,mz=0;if(keys.has('a')||keys.has('arrowleft'))mx--;if(keys.has('d')||keys.has('arrowright'))mx++;if(keys.has('w')||keys.has('arrowup'))mz--;if(keys.has('s')||keys.has('arrowdown'))mz++;if(length(joystick.x,joystick.y)>length(mx,mz)){mx=joystick.x;mz=-joystick.y}
-let mag=Math.max(1,length(mx,mz));let running=(keys.has('shift')||sprintHeld)&&stamina>2&&length(mx,mz)>.1;stamina=Math.max(0,Math.min(100,stamina+(running?-31:17)*dt));move(selected,mx/mag,mz/mag,(running?9.0:5.9)*selected.profile.pace,dt);staminaBar.style.width=stamina+'%';staminaText.textContent=Math.round(stamina)+'%';superBar.style.width=superCharge+'%';superText.textContent=superCharge===100?'¡LISTO!':Math.round(superCharge)+'%';if(hyperQueued){hyperShot();hyperQueued=false;}for(let a of actors)if(a!==selected)updateAI(a,dt);
+let mag=Math.max(1,length(mx,mz));let running=(keys.has('shift')||sprintHeld)&&stamina>2&&length(mx,mz)>.1;stamina=Math.max(0,Math.min(100,stamina+(running?(selected.profile.role==='EXTREMO'?-25:-31):17)*dt));move(selected,mx/mag,mz/mag,(running?9.0:5.9)*selected.profile.pace,dt);staminaBar.style.width=stamina+'%';staminaText.textContent=Math.round(stamina)+'%';superBar.style.width=superCharge+'%';superText.textContent=superCharge===100?'¡LISTO!':Math.round(superCharge)+'%';if(hyperQueued){hyperShot();hyperQueued=false;}for(let a of actors)if(a!==selected)updateAI(a,dt);
 if(switchQueued){switchPlayer();switchQueued=false}if(passQueued){pass(selected);passQueued=false}if(tackleQueued){
  if(tackleWait<=0&&stamina>=8){
   const carrier=ball.owner&&ball.owner.team===RED?ball.owner:null;
@@ -155,7 +155,7 @@ if(switchQueued){switchPlayer();switchQueued=false}if(passQueued){pass(selected)
   selected.z=clamp(selected.z+Math.cos(aim)*dash,-12.7,12.7);
   selected.slideTimer=.38;stamina=Math.max(0,stamina-9);tackleWait=1.1;
   burst(selected.x,.22,selected.z,col.cyan,8,3.5);
-  if(carrier&&length(carrier.x-selected.x,carrier.z-selected.z)<2.35){
+  if(carrier&&length(carrier.x-selected.x,carrier.z-selected.z)<(selected.profile.role==='DEFENSA'?2.85:2.35)){
    ball.owner=selected;selected.stealCooldown=1.7;chargeSuper(23);
    stats.steals++;shake=.14;sfx('steal');showBanner('¡BARRIDA PERFECTA!',.65);
   }
@@ -221,6 +221,26 @@ if(a.slideTimer>0){
  obj('sphere',0,1.48+bounce,-.025,.54*bulk,.73,.40,p.goalie?col.yellow:primary,.27);
  obj('cube',0,1.53+bounce,.275,.66*bulk,.47,.14,secondary,.42);
  obj('cube',0,1.44+bounce,.36,.35,.18,.07,trim,1.25);
+  // Equipo distintivo para cada posición.
+  if(p.role==='DELANTERO'){
+   obj('sphere',0,1.57+bounce,.458,.18,.21,.085,col.white,1.4);
+   obj('sphere',0,1.57+bounce,.54,.085,.09,.05,trim,2.2);
+   for(let s of [-1,1])obj('cube',s*.46*bulk,1.86+bounce,.05,.18,.16,.48,trim,.7);
+  }else if(p.role==='EXTREMO'){
+   for(let s of [-1,1]){
+    obj('cube',s*.45*bulk,1.54+bounce,.35,.07,.39,.05,col.white,.6);
+    obj('cube',s*.54*bulk,1.93+bounce,-.25,.12,.07,.45,trim,1.0);
+   }
+  }else if(p.role==='DEFENSA'){
+   for(let s of [-1,1]){
+    obj('cube',s*.68*bulk,1.84+bounce,-.02,.35,.27,.51,secondary,.7);
+    obj('cube',s*.68*bulk,1.88+bounce,.28,.17,.12,.05,trim,1.3);
+   }
+   obj('cube',0,1.46+bounce,.47,.38,.3,.08,col.white,.6);
+  }else{
+   obj('cube',0,1.42+bounce,.47,.62,.12,.09,col.yellow,1);
+   for(let s of [-1,1])obj('sphere',s*.8*bulk,1.23+bounce,.16,.31,.28,.26,col.yellow,.55);
+  }
  obj('sphere',0,1.94+bounce,-.03,.48*bulk,.18,.38,navy,.15);
  obj('cube',0,1.09+bounce,.26,.48*bulk,.14,.16,navy);
  // Player numbers are real 3D segmented marks on the uniform.
