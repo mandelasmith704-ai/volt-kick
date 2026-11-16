@@ -1,6 +1,6 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>VOLT KICK | Kairo Flux — Modelo 3D real</title>
+<title>VOLT KICK | Kairo Flux — Escultura 3D v2</title>
 <meta name="theme-color" content="#071324">
 <style>
 :root{color-scheme:dark;font:14px system-ui,-apple-system,Segoe UI,sans-serif;background:#020918;color:#eefbff}
@@ -35,19 +35,19 @@ a{color:#79f1ff}#state{color:#9eeaff;font-size:12px;font-weight:800;padding:9px 
 <div class="brand">VOLT <b>KICK</b></div>
 <h1>KAIRO <b>FLUX</b></h1>
 <div class="tag">NEÓN · EL RELÁMPAGO · DORSAL 07</div>
-<p>Primera escultura geométrica 3D original. Puedes girarla, inspeccionar el uniforme, el rostro y las protecciones, y ver las formas del personaje desde todos los ángulos.</p>
+<p>Modelo 3D reconstruido: anatomía más orgánica, rostro con ojos y expresión, mechones de cabello, uniforme por capas, botas deportivas y energía eléctrica. Puedes acercarte a la cara o inspeccionar el cuerpo entero.</p>
 <div class="stat"><span>VELOCIDAD</span><span>★★★★★</span></div>
 <div class="stat"><span>AGILIDAD</span><span>★★★★☆</span></div>
 <div class="stat"><span>FUERZA</span><span>★★☆☆☆</span></div>
 <div class="controls">
 <button data-angle="0" class="active">FRENTE</button><button data-angle="1.570796">PERFIL</button><button data-angle="3.14159">ESPALDA</button>
 </div>
-<div class="controls"><button id="rotate">↻ GIRO</button><button id="light">⚡ ENERGÍA</button><button id="closer">＋ ACERCAR</button><button id="further">－ ALEJAR</button></div>
+<div class="controls"><button id="rotate">↻ GIRO</button><button id="light">⚡ ENERGÍA</button><button id="face">👁 ROSTRO</button><button id="body">CUERPO</button><button id="closer">＋ ZOOM</button><button id="further">－ ZOOM</button></div>
 <div id="state">Cargando modelo 3D...</div>
-<p class="note">Modelo OBJ editable de malla rígida. No tiene esqueleto, animación corporal ni texturas pintadas: todavía no representa la calidad del personaje final. Esta sala utiliza Three.js para mostrar la malla OBJ real.</p>
+<p class="note">Escultura procedural v2 con 31,868 triángulos y materiales diferenciados. Sigue sin esqueleto, texturas UV profesionales ni animación corporal. No pretende sustituir el modelado definitivo en Blender.</p>
 <a href="../">← Regresar al partido</a>
 </div>
-<div id="hud">CAPTAIN 01 · KA I RO FLUX<br>CHARACTER DEVELOPMENT / WIP</div>
+<div id="hud">CAPTAIN 01 · KAIRO FLUX V2<br>CHARACTER DEVELOPMENT / WIP</div>
 <div id="hint">Arrastra para girar · Rueda del mouse o dedos para acercar y alejar</div>
 <script type="module">
 import * as THREE from 'three';
@@ -88,17 +88,26 @@ try{
  model=await loader.loadAsync('./assets/kairo-flux.obj');
  model.traverse(child=>{if(!child.isMesh)return;
   const original=child.material,base=original?.color?.clone()??new THREE.Color(0x163451);
-  const luminous=original?.name==='CYAN';const metallic=/SILVER|STEEL/.test(original?.name||'');
-  child.material=new THREE.MeshStandardMaterial({
-    color:base,metalness:luminous?.3:metallic?.68:.18,
-    roughness:luminous?.23:metallic?.31:.70,
+  const matname=original?.name||'';
+  const luminous=matname==='CYAN';
+  const metallic=/SILVER|STEEL/.test(matname);
+  const natural=/^SKIN|^LIP/.test(matname);
+  const hair=/^HAIR/.test(matname);
+  const textile=/CLOTH|NAVY/.test(matname);
+  const boot=/BOOT|GLOVE/.test(matname);
+  child.material=new THREE.MeshPhysicalMaterial({
+    color:base,
+    metalness:luminous?.30:metallic?.78:natural?.02:hair?.07:boot?.30:.18,
+    roughness:luminous?.24:metallic?.22:natural?.62:hair?.37:textile?.80:boot?.48:.47,
+    clearcoat:luminous?.5:metallic?.45:hair?.33:.06,
+    clearcoatRoughness:.22,
     emissive:luminous?base:new THREE.Color(0),
-    emissiveIntensity:luminous?1.5:0,
+    emissiveIntensity:luminous?1.23:0,
     side:THREE.DoubleSide
   });child.castShadow=true;child.receiveShadow=true;
  });
  scene.add(model);
- status.textContent='Modelo 3D cargado · 106 piezas · 7,895 triángulos';
+ status.textContent='Escultura v2 cargada · 138 piezas · 31,868 triángulos';
 }catch(err){status.textContent='No se pudo cargar el modelo. Actualiza la página o revisa tu conexión.';console.error(err);}
 const buttonRotate=document.querySelector('#rotate');
 buttonRotate.onclick=()=>{controls.autoRotate=!controls.autoRotate;buttonRotate.classList.toggle('active',controls.autoRotate);};
@@ -107,11 +116,21 @@ document.querySelector('#light').onclick=e=>{
  ringMat.opacity=energy?.94:.22;rim.intensity=energy?22:4;
  if(model)model.traverse(c=>{if(c.isMesh&&c.material?.emissiveIntensity>0)c.material.emissiveIntensity=energy?1.5:.03;});
 };
+document.querySelector('#face').onclick=()=>{
+ controls.target.set(0,2.76,0);
+ camera.position.set(.18,3.02,3.1);camera.lookAt(controls.target);
+ controls.autoRotate=false;buttonRotate.classList.remove('active');
+ document.querySelectorAll('[data-angle]').forEach(x=>x.classList.remove('active'));controls.update();
+};
+document.querySelector('#body').onclick=()=>{
+ controls.target.set(0,1.67,0);
+ camera.position.set(0,3.8,8.4);camera.lookAt(controls.target);controls.update();
+};
 const setZoom=(factor)=>{let delta=camera.position.clone().sub(controls.target).multiplyScalar(factor);camera.position.copy(controls.target).add(delta);controls.update()};
 document.querySelector('#closer').onclick=()=>setZoom(.82);
 document.querySelector('#further').onclick=()=>setZoom(1.22);
 document.querySelectorAll('[data-angle]').forEach(b=>b.onclick=()=>{
- const angle=Number(b.dataset.angle);camera.position.set(Math.sin(angle)*8.2,3.6,Math.cos(angle)*8.2);
+ const angle=Number(b.dataset.angle);controls.target.set(0,1.67,0);camera.position.set(Math.sin(angle)*8.2,3.6,Math.cos(angle)*8.2);
  controls.autoRotate=false;buttonRotate.classList.remove('active');
  controls.update();
  document.querySelectorAll('[data-angle]').forEach(x=>x.classList.toggle('active',x===b));
