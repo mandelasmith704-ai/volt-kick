@@ -1,51 +1,39 @@
-# KAIRO FLUX — Capitán del equipo NEÓN
+# KAIRO FLUX — Capitán NEÓN
 
-## Estado del personaje · Iteración 01
+## Modelo 3D: iteración 02
 
-La dirección artística está fijada mediante una **lámina conceptual de frente, perfil y espalda** generada para VOLT KICK. Esta primera versión geométrica es una **maqueta 3D** para comenzar a validar volumen, silueta, paleta, equipo y proporciones; todavía no reproduce el nivel de detalle del concepto.
+**Visor web:** https://mandelasmith704-ai.github.io/volt-kick/captains/kairo-flux.html
 
-### Ver en el navegador
+Se regeneró la malla geométrica inicial de Kairo, buscando una silueta más orgánica con rostro, anatomía, cabello en mechones 3D, calzado deportivo y armadura por capas. Se mejoraron materiales, iluminación y controles del visor, con un modo **ROSTRO**.
 
-https://mandelasmith704-ai.github.io/volt-kick/captains/kairo-flux.html
+### Entregables subidos a GitHub
 
-La página del visor usa Three.js, carga la malla OBJ y el archivo de materiales desde `assets/`, y ofrece vistas de frente, perfil y espalda, rotación, zoom e iluminación elemental.
-
-### Archivos editables
-
-- [Malla OBJ](assets/kairo-flux.obj)
+- [Modelo actualizado OBJ](assets/kairo-flux.obj)
 - [Materiales MTL](assets/kairo-flux.mtl)
-- [Visor del modelo real](kairo-flux.html)
+- [Visor interactivo](kairo-flux.html)
+- [Versión OBJ anterior, respaldo](archive/kairo-flux-v01.obj)
+- [Materiales anteriores, respaldo](archive/kairo-flux-v01.mtl)
 
-Detalles de la malla generada:
-- **4,858 vértices**
-- **7,895 triángulos**
-- **106 piezas** geométricas nombradas
-- **10 materiales** con paleta azul oscuro, cian eléctrico, plata y piel
-- Orientación: eje **Y vertical**, frente hacia **+Z**.
-- Sin esqueleto, pesos de skinning, morph targets, texturas UV ni animaciones de huesos.
+### Verificaciones geométricas realizadas
 
-### Pasos para importar a Unity
+- 18,763 vértices y 18,763 normales
+- 31,868 triángulos
+- 138 objetos/piezas con 12 materiales
+- 0 índices de vértice o normal fuera de rango
+- JavaScript del visor verificado sintácticamente
 
-1. Importar `kairo-flux.obj` y `kairo-flux.mtl` juntos dentro de `Assets/Characters/Kairo/`.
-2. Inspeccionar orientación y escala en una escena vacía, y usar materiales compatibles con URP.
-3. Convertir la maqueta en un modelo definitivo con topología y materiales adecuados, retopología y UV mapping.
-4. Construir el rig humanoide y producir idle, carrera, sprint, pase, tiro, barrida, celebración y especial eléctrico.
-5. Crear versiones LOD, probar sombras y FPS en iPhone real.
+### Lo que falta — sin maquillar el estado
 
-### Criterios de calidad para dar por aprobado al personaje
+Este **no** es todavía un personaje 3D profesional terminado ni una conversión fiel del concepto ilustrado. Las formas se han generado de manera procedural y carecen de retopología artística, UVs, texturas pintadas, esqueleto, pesos de deformación y animaciones de personaje. Aún no se ha comprobado visualmente en todos los dispositivos.
 
-- La silueta debe reconocerse a distancia sin depender exclusivamente del azul eléctrico.
-- Rostro expresivo, cabello angular y proporciones coherentes entre vistas.
-- Telas, metal, goma y emisivos deben distinguirse mediante PBR y texturas optimizadas.
-- Guardar la referencia conceptual y compararla con capturas de la malla en frente, perfil y espalda.
-- El modelo final debe deformarse bien al correr y patear, sin cruces entre hombros, rodillas y botas.
+Para acercarlo al concepto hay que utilizar un flujo profesional con **Blender** o una plataforma de generación de modelos 3D con revisión humana. Recomiendo comparar frontal, lateral, espalda y primer plano del rostro con el arte conceptual de referencia, y corregir hasta obtener una silueta convincente antes de añadir animaciones o producir más capitanes.
 
-### Equipo y especial
+### Siguiente nivel de calidad
 
-- Equipo: **NEÓN**
-- Nombre: **Kairo Flux**
-- Poder: **rayo**
-- Rasgo: **velocidad / aceleración**
-- Especial previsto: **Arranque Relámpago** (aún no implementado)
+1. Escultura anatómica supervisada y diseño facial fiel a la hoja conceptual.
+2. Vestuario y armaduras con UV, PBR y texturas.
+3. Retopología y rig humanoide.
+4. Animaciones de carrera, tiro y especial del rayo.
+5. LODs y pruebas de rendimiento en iPhone; luego importar en Unity.
 
-**Importante:** La demo 3D web actual de VOLT KICK sigue siendo una prealfa; este estudio no añade automáticamente a Kairo al partido, ni se presenta como personaje AAA terminado.
+**Alcance:** solo Kairo Flux. Aún no modifica el estadio, la afición, el partido ni los otros capitanes.
