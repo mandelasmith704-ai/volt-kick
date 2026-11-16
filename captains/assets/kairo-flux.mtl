@@ -1,81 +1,97 @@
-# KAIRO FLUX / MATERIAL PALETTE V1
-newmtl NAVY_DARK
-Ka 0.02 0.02 0.02
-Kd 0.02 0.05 0.12
-Ks 0.05 0.05 0.05
-Ns 36
-d 1
-illum 2
-
-newmtl NAVY_BLUE
-Ka 0.02 0.02 0.02
-Kd 0.055 0.17 0.34
-Ks 0.12 0.12 0.12
+# VOLT KICK - Kairo Flux sculpt v2
+newmtl NAVY_CLOTH
+Ka .02 .02 .02
+Kd 0.033 0.08 0.17
+Ks 0.13 0.13 0.13
 Ns 60
 d 1
 illum 2
 
-newmtl NAVY_CLOTH
-Ka 0.02 0.02 0.02
-Kd 0.03 0.085 0.2
-Ks 0.02 0.02 0.02
-Ns 18
+newmtl NAVY_DARK
+Ka .02 .02 .02
+Kd 0.016 0.033 0.075
+Ks 0.3 0.3 0.3
+Ns 80
 d 1
 illum 2
 
-newmtl SILVER
-Ka 0.02 0.02 0.02
-Kd 0.56 0.67 0.77
-Ks 0.32 0.32 0.32
+newmtl NAVY_BLUE
+Ka .02 .02 .02
+Kd 0.04 0.18 0.35
+Ks 0.45 0.45 0.45
 Ns 95
 d 1
 illum 2
 
-newmtl STEEL_DARK
-Ka 0.02 0.02 0.02
-Kd 0.19 0.26 0.33
-Ks 0.2 0.2 0.2
-Ns 50
+newmtl SILVER
+Ka .02 .02 .02
+Kd 0.66 0.77 0.85
+Ks 0.8 0.8 0.8
+Ns 110
 d 1
 illum 2
 
 newmtl CYAN
-Ka 0.02 0.02 0.02
-Kd 0.05 0.87 0.99
-Ks 0.4 0.4 0.4
-Ns 70
+Ka .02 .02 .02
+Kd 0.02 0.91 1
+Ks 0.35 0.35 0.35
+Ns 90
 d 1
 illum 2
 
 newmtl SKIN
-Ka 0.02 0.02 0.02
-Kd 0.8 0.57 0.44
-Ks 0.08 0.08 0.08
-Ns 18
-d 1
-illum 2
-
-newmtl HAIR
-Ka 0.02 0.02 0.02
-Kd 0.012 0.023 0.055
-Ks 0.18 0.18 0.18
-Ns 70
+Ka .02 .02 .02
+Kd 0.74 0.5 0.36
+Ks 0.12 0.12 0.12
+Ns 45
 d 1
 illum 2
 
 newmtl WHITE
-Ka 0.02 0.02 0.02
-Kd 0.91 0.96 0.99
-Ks 0.13 0.13 0.13
-Ns 30
+Ka .02 .02 .02
+Kd 0.91 0.96 0.98
+Ks 0.1 0.1 0.1
+Ns 45
 d 1
 illum 2
 
 newmtl IRIS
-Ka 0.02 0.02 0.02
-Kd 0.045 0.47 0.6
-Ks 0.2 0.2 0.2
-Ns 50
+Ka .02 .02 .02
+Kd 0.02 0.63 0.82
+Ks 0.25 0.25 0.25
+Ns 85
+d 1
+illum 2
+
+newmtl HAIR
+Ka .02 .02 .02
+Kd 0.015 0.025 0.055
+Ks 0.3 0.3 0.3
+Ns 80
+d 1
+illum 2
+
+newmtl HAIR_BLUE
+Ka .02 .02 .02
+Kd 0.04 0.2 0.38
+Ks 0.35 0.35 0.35
+Ns 90
+d 1
+illum 2
+
+newmtl LIP
+Ka .02 .02 .02
+Kd 0.32 0.16 0.17
+Ks 0.12 0.12 0.12
+Ns 20
+d 1
+illum 2
+
+newmtl BOOT_BLUE
+Ka .02 .02 .02
+Kd 0.035 0.13 0.28
+Ks 0.3 0.3 0.3
+Ns 85
 d 1
 illum 2
 
