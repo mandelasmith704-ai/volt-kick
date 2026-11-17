@@ -1,42 +1,46 @@
-# VOLT KICK — Kairo Flux (NEÓN)
+# KAIRO FLUX — Capitán NEÓN
 
-## Modelo actual: V4.1 — Pase de detalle y limpieza
+## V5 — Corrección de apariencia oscura (17 de noviembre de 2026)
 
-**Visor interactivo:** https://mandelasmith704-ai.github.io/volt-kick/captains/kairo-flux.html?v=41
+**Visor interactivo:** https://mandelasmith704-ai.github.io/volt-kick/captains/kairo-flux.html?v=5
 
-### Entregable actual
+**Modelo actual:** [Kairo Flux V5 · GLB](assets/kairo-flux-v5-colorfix.glb), un modelo 3D estático de referencia para VOLT KICK.
 
-- [Kairo V4.1 · GLB (2.17 MB)](assets/kairo-flux-v4-1-cleanup.glb) — modelo tridimensional estático, con la reconstrucción texturizada de V3 y piezas nuevas de detalle
-- [Visor 3D](kairo-flux.html) — comparador V4.1 y V3, giro libre, acercamiento de rostro y modo alambre
-- [V4 inicial (conservada)](assets/kairo-flux-v4-detail-pass.glb)
-- [V3 texturizada (conservada)](assets/kairo-flux-v3-textured.glb)
-- [V2 anterior (conservada)](assets/kairo-flux-v2.glb)
+### Qué se corrigió
 
-### Cambios realizados respecto a V3
+- La textura original ya contenía sombras y luces pintadas; el visor aplicaba sombreado físico y sombras propias sobre ella, duplicando el oscurecimiento.
+- La iluminación frontal insuficiente hacía que el rostro y el uniforme perdieran detalle.
+- Las superficies del cabello y la armadura eran excesivamente oscuras incluso sin el visor.
 
-1. Geometría independiente de cabello angular, con mechones cortos y acentos azules
-2. Trazo eléctrico ligeramente volumétrico sobre la mejilla izquierda
-3. Capas de protección en hombros y guanteletes, con líneas luminosas
-4. Elementos adicionales en espinilleras y botas
-5. Limpieza de **890 triángulos** de pequeños fragmentos desconectados de la proyección original
-6. Materiales diferenciados (azules, titanio, piel, cabello y emisivos), manteniendo la textura aprobada en el cuerpo
+En V5, los tonos medios del mapa de textura se elevaron con una transformación conservando contraste, se aclaró la paleta del cabello, metálicos y piel, y se agregaron nueve trazos 3D decorativos de energía en hombros, botas, cintura y espinilleras.
 
-### Verificaciones técnicas realizadas
+El visor ahora:
+- Carga V5 por defecto.
+- Aplica por defecto **TEXTURA CLARA** (material sin doble sombreado) solo a las texturas fotoproyectadas.
+- Conserva iluminación física en las piezas sin proyección.
+- Añade relleno frontal y desactiva el autosombreado problemático de la malla provisional.
+- Permite alternar modo claro/PBR, comparar V5/V4.1/V3, activar energía, malla, giro y primer plano de rostro.
 
-- **100,872 triángulos** en **56 mallas** (una malla base + 55 piezas)
-- **53,085 vértices** después de las operaciones de geometría y UV
-- GLB de **2.17 MB**, generado y reimportado satisfactoriamente con Trimesh
-- Render real de frente, perfil y espalda en VTK
-- JavaScript del visor verificado sintácticamente
-- Archivo y visor subidos a GitHub
-- El modelo base **no es completamente hermético** (`is_watertight = false`): quedan aberturas y transiciones que necesitan reconstrucción; el modelo **no está listo para rigging**
+### Verificaciones técnicas
 
-### Limitaciones que siguen pendientes
+- 65 mallas, **101,272 triángulos**, archivo de **2,856,228 bytes**.
+- El GLB se reimportó con Trimesh.
+- Se renderizaron vistas frontal, perfil y posterior con VTK.
+- El JavaScript del visor pasó comprobación sintáctica.
+- GitHub Actions publicó el cambio con estado *success*.
 
-La reconstrucción fototexturizada sigue teniendo costuras y errores de profundidad entre las distintas vistas, especialmente en perfil. Las piezas de detalle V4.1 son adiciones independientes y no reemplazan la necesidad de modelado orgánico supervisado. El rostro no es una escultura manual de alta fidelidad, no hay materiales PBR pintados con UV propias, y tampoco hay esqueleto, pesos, animaciones, LOD ni validación de rendimiento iOS.
+### Versiones guardadas
 
-**Más polígonos no equivalen a calidad AAA.** La ruta de producción de Kairo pasa por reconstruir una malla limpia en Blender u otra herramienta 3D especializada, mejorar rostro/cabello, retopología, UV y materiales, rig y animaciones, y probar en Unity.
+- [V5 claro](assets/kairo-flux-v5-colorfix.glb)
+- [V4.1](assets/kairo-flux-v4-1-cleanup.glb)
+- [V4](assets/kairo-flux-v4-detail-pass.glb)
+- [V3](assets/kairo-flux-v3-textured.glb)
+- [V2](assets/kairo-flux-v2.glb)
 
-### Alcance
+### Limitaciones reales
 
-Solo Kairo Flux. No se modificaron los demás capitanes, la cancha, el partido ni la afición. Evitar mezclar esta maqueta con el personaje comercial definitivo.
+Aunque V5 mejora visibilidad y algunos detalles, **no es una escultura profesional terminada**. La geometría base y parte de la apariencia fueron reconstruidas a partir de imágenes, por lo que persisten errores anatómicos, costuras, superposiciones, proyección lateral imperfecta y partes separadas. No tiene rig, animaciones, UVs de producción ni LODs, y tampoco está validada su ejecución a rendimiento objetivo en iPhone.
+
+Siguiente hito de calidad: reconstruir cabeza y cuerpo con modelado 3D supervisado y topología continua, mapear textiles y metal mediante texturas PBR, preparar esqueleto/skin y verificar las animaciones en Unity.
+
+**Alcance:** Solo Kairo Flux. El partido, el estadio, la afición y los otros cuatro capitanes siguen sin cambios.
