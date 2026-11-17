@@ -8,6 +8,7 @@ Se regeneró la malla geométrica inicial de Kairo, buscando una silueta más or
 
 ### Entregables subidos a GitHub
 
+- **[Kairo Flux GLB v2 para Unity / Blender](assets/kairo-flux-v2.glb)** — archivo 3D binario con geometría, normales y 12 materiales. 647 KB aprox.; escala corregida a una estatura aproximada de 1.86 m. **Sin rig ni animación.**
 - [Modelo actualizado OBJ](assets/kairo-flux.obj)
 - [Materiales MTL](assets/kairo-flux.mtl)
 - [Visor interactivo](kairo-flux.html)
@@ -20,7 +21,7 @@ Se regeneró la malla geométrica inicial de Kairo, buscando una silueta más or
 - 31,868 triángulos
 - 138 objetos/piezas con 12 materiales
 - 0 índices de vértice o normal fuera de rango
-- JavaScript del visor verificado sintácticamente
+- JavaScript del visor verificado sintácticamente; visor actualizado para cargar el mismo GLB, sin prueba visual en dispositivo real
 
 ### Lo que falta — sin maquillar el estado
 
