@@ -1,11 +1,11 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>VOLT KICK | Kairo Flux — V4.1 Refinado</title>
+<title>VOLT KICK | Kairo Flux — V5 Color e iluminación</title>
 <meta name="theme-color" content="#071324">
 <style>
 :root{color-scheme:dark;font:14px system-ui,-apple-system,Segoe UI,sans-serif;background:#020918;color:#eefbff}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
-#viewer{position:fixed;inset:0;background:radial-gradient(ellipse at 56% 47%,#103852 0%,#071d32 36%,#020917 88%)}
+#viewer{position:fixed;inset:0;background:radial-gradient(ellipse at 60% 41%,#294c64 0%,#10283e 45%,#071524 100%)}
 #viewer canvas{display:block;width:100%;height:100%}
 #panel{position:fixed;left:0;top:0;bottom:0;width:345px;padding:26px 25px;overflow:auto;background:linear-gradient(130deg,#071d34ee,#06101eeb);z-index:4;border-right:1px solid #32e0ee70;box-shadow:18px 0 45px #0008}
 .tag{font-size:11px;letter-spacing:2px;color:#4fe1f7;font-weight:800}.brand{font-size:22px;font-style:italic;font-weight:1000;letter-spacing:2px;margin:14px 0}
@@ -35,40 +35,42 @@ a{color:#79f1ff}#state{color:#9eeaff;font-size:12px;font-weight:800;padding:9px 
 <div class="brand">VOLT <b>KICK</b></div>
 <h1>KAIRO <b>FLUX</b></h1>
 <div class="tag">NEÓN · EL RELÁMPAGO · DORSAL 07</div>
-<p>Maqueta V4.1 con limpieza de fragmentos y detalles 3D adicionales de cabello, marca eléctrica en el rostro, hombros, guantes, espinilleras y botas. Conserva la reconstrucción texturizada anterior y permite compararla con la V3. Gira el personaje para evaluar los cambios.</p>
+<p>V5 corrige la oscuridad de la piel, el uniforme y los reflejos. La textura ahora conserva los detalles aunque la cámara gire; el rostro y las placas de armadura reciben luz frontal. Puedes comparar con las versiones anteriores.</p>
 <div class="stat"><span>VELOCIDAD</span><span>★★★★★</span></div>
 <div class="stat"><span>AGILIDAD</span><span>★★★★☆</span></div>
 <div class="stat"><span>FUERZA</span><span>★★☆☆☆</span></div>
 <div class="controls" aria-label="Comparar versiones">
-<button data-version="4" class="active">V4.1 · REFINADA</button><button data-version="3">V3 · ANTERIOR</button>
+<button data-version="5" class="active">V5 · MÁS CLARA</button><button data-version="4">V4.1</button><button data-version="3">V3</button>
 </div>
 <div class="controls">
 <button data-angle="0" class="active">FRENTE</button><button data-angle="1.570796">PERFIL</button><button data-angle="3.14159">ESPALDA</button>
 </div>
-<div class="controls"><button id="rotate">↻ GIRO</button><button id="light">⚡ ENERGÍA</button><button id="wire">◈ MALLA</button><button id="face">👁 ROSTRO</button><button id="body">CUERPO</button><button id="closer">＋ ZOOM</button><button id="further">－ ZOOM</button></div>
+<div class="controls"><button id="rotate">↻ GIRO</button><button id="light">⚡ ENERGÍA</button><button id="clear" class="active">☀ TEXTURA CLARA</button><button id="wire">◈ MALLA</button><button id="face">👁 ROSTRO</button><button id="body">CUERPO</button><button id="closer">＋ ZOOM</button><button id="further">－ ZOOM</button></div>
 <div id="state">Cargando modelo 3D...</div>
-<p class="note">V4.1: 100,872 triángulos con 55 piezas decorativas; se retiraron 890 triángulos de fragmentos pequeños desconectados. Conservamos V3 (85,232 triángulos) para comparar. Aún hay costuras de proyección y no existe rig ni animación. Es un prototipo, no un personaje comercial terminado.</p>
+<p class="note">V5: 101,272 triángulos, materiales aclarados y 9 nuevas piezas de detalles eléctricos. Corregimos la iluminación del visor y evitamos las sombras que oscurecían la malla. V4.1 y V3 siguen disponibles. Falta reparar costuras y rigging para animación.</p>
 <a href="../">← Regresar al partido</a>
 </div>
-<div id="hud">CAPTAIN 01 · KAIRO FLUX V4.1<br>CHARACTER DEVELOPMENT / WIP</div>
+<div id="hud">CAPTAIN 01 · KAIRO FLUX V5<br>CHARACTER DEVELOPMENT / WIP</div>
 <div id="hint">Arrastra para girar · Rueda del mouse o dedos para acercar y alejar</div>
 <script type="module">
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const host=document.querySelector('#viewer'),status=document.querySelector('#state');
-const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x041021,12,40);
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x102537,12,40);
 const camera=new THREE.PerspectiveCamera(36,innerWidth/innerHeight,.1,120);camera.position.set(0,2.0,4.15);
 const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
 renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.55;
+renderer.shadowMap.enabled=false; // Evita el sombreado propio de los elementos interpenetrados en esta malla provisional.
 host.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xc3faff,0x17273c,1.55));
-const key=new THREE.DirectionalLight(0xffffff,2.0);key.position.set(3,5,5);key.castShadow=true;
+scene.add(new THREE.AmbientLight(0xffffff,1.05));
+scene.add(new THREE.HemisphereLight(0xdbffff,0x576b83,2.2));
+const key=new THREE.DirectionalLight(0xffffff,3.0);key.position.set(2,4,5);key.castShadow=false;
 key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-7;key.shadow.camera.right=7;key.shadow.camera.top=7;key.shadow.camera.bottom=-7;scene.add(key);
-const rim=new THREE.PointLight(0x13eaff,7,6);rim.position.set(-2.5,2.5,-2.4);scene.add(rim);
+const fill=new THREE.DirectionalLight(0xd4faff,2.25);fill.position.set(-2,2.2,4);scene.add(fill);
+const rim=new THREE.PointLight(0x13eaff,9,7);rim.position.set(-2.5,2.5,-2.4);scene.add(rim);
 const warm=new THREE.PointLight(0x608eff,5,6);warm.position.set(2.0,2.0,-2.0);scene.add(warm);
 const pedestal=new THREE.Mesh(new THREE.CylinderGeometry(.82,.90,.12,72),new THREE.MeshStandardMaterial({color:0x101e30,metalness:.7,roughness:.31}));pedestal.position.y=-.055;pedestal.receiveShadow=true;scene.add(pedestal);
 const ringMat=new THREE.MeshBasicMaterial({color:0x42ebff,transparent:true,opacity:.94,depthWrite:false});
@@ -83,8 +85,9 @@ const sparks=[];for(let i=0;i<16;i++){
  const spark=new THREE.Mesh(new THREE.IcosahedronGeometry(.035+(i%3)*.012),mat);
  spark.userData={i};scene.add(spark);sparks.push(spark);
 }
-let model=null,energy=true,loadSequence=0,wireEnabled=false;
+let model=null,energy=true,loadSequence=0,wireEnabled=false,clearMode=true;
 const available={
+  '5':{file:'./assets/kairo-flux-v5-colorfix.glb?v=5',label:'V5 · 101,272 triángulos · colores e iluminación corregidos'},
   '4':{file:'./assets/kairo-flux-v4-1-cleanup.glb?v=41',label:'V4.1 · 100,872 triángulos · limpieza de proyección y detalles'},
   '3':{file:'./assets/kairo-flux-v3-textured.glb',label:'V3 · 85,232 triángulos · reconstrucción texturizada'}
 };
@@ -100,20 +103,30 @@ async function loadModel(ver){
    newModel.traverse(child=>{
      if(!child.isMesh)return;
      const source=child.material;
-     if(source?.map) {
-       child.material=new THREE.MeshStandardMaterial({
-         color:0xffffff,map:source.map,metalness:.05,roughness:.84,side:THREE.DoubleSide,
-         wireframe:wireEnabled
+     child.userData.isTextured=!!source?.map;
+     if(source?.map){
+       // La textura original es una proyección ya iluminada; volver a aplicar
+       // sombras PBR produce una malla casi negra (doble sombreado).
+       source.map.colorSpace=THREE.SRGBColorSpace;
+       source.map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+       child.userData.clearMat=new THREE.MeshBasicMaterial({
+         color:0xffffff,map:source.map,side:THREE.DoubleSide,
+         wireframe:wireEnabled,toneMapped:false
        });
+       child.userData.litMat=new THREE.MeshStandardMaterial({
+         color:0xffffff,map:source.map,metalness:0,roughness:.88,
+         side:THREE.DoubleSide,wireframe:wireEnabled
+       });
+       child.material=clearMode?child.userData.clearMat:child.userData.litMat;
      }else{
        child.material=source?.clone()??new THREE.MeshStandardMaterial({color:0x4bdced});
        child.material.side=THREE.DoubleSide;
        child.material.wireframe=wireEnabled;
-       child.material.roughness=Math.max(child.material.roughness??.5,.33);
+       if('metalness' in child.material)child.material.metalness=Math.min(.5,child.material.metalness??.1);
+       if('roughness' in child.material)child.material.roughness=Math.max(.4,child.material.roughness??.5);
      }
-     child.material.userData.baseEmissive=child.material.emissiveIntensity??1;
-     child.material.emissiveIntensity=energy?child.material.userData.baseEmissive:0;
-     child.castShadow=true;child.receiveShadow=true;
+     child.userData.baseEmissive=child.material.emissiveIntensity??0;
+     child.castShadow=false;child.receiveShadow=false;
    });
    if(model)scene.remove(model);
    model=newModel;scene.add(model);
@@ -124,13 +137,22 @@ async function loadModel(ver){
  }
 }
 document.querySelectorAll('[data-version]').forEach(b=>b.addEventListener('click',()=>loadModel(b.dataset.version)));
-loadModel('4');
+loadModel('5');
 const buttonRotate=document.querySelector('#rotate');
 buttonRotate.onclick=()=>{controls.autoRotate=!controls.autoRotate;buttonRotate.classList.toggle('active',controls.autoRotate);};
+document.querySelector('#clear').onclick=e=>{
+ clearMode=!clearMode;
+ e.currentTarget.classList.toggle('active',clearMode);
+ e.currentTarget.textContent=clearMode?'☀ TEXTURA CLARA':'◐ LUZ PBR';
+ if(model)model.traverse(c=>{if(c.isMesh&&c.userData.isTextured){
+ c.material=clearMode?c.userData.clearMat:c.userData.litMat;
+ c.material.wireframe=wireEnabled;c.material.needsUpdate=true;
+ }});
+};
 document.querySelector('#light').onclick=e=>{
  energy=!energy;e.currentTarget.classList.toggle('active',energy);
  ringMat.opacity=energy?.94:.22;rim.intensity=energy?7:1;
- if(model)model.traverse(c=>{if(c.isMesh&&c.material)c.material.emissiveIntensity=energy?(c.material.userData.baseEmissive??1):0;});
+ if(model)model.traverse(c=>{if(c.isMesh&&!c.userData.isTextured&&c.material?.emissive)c.material.emissiveIntensity=energy?(c.userData.baseEmissive??1):0;});
 };
 document.querySelector('#face').onclick=()=>{
  controls.target.set(0,1.66,0);
@@ -144,7 +166,7 @@ document.querySelector('#body').onclick=()=>{
 };
 document.querySelector('#wire').onclick=e=>{
  wireEnabled=e.currentTarget.classList.toggle('active');
- if(model)model.traverse(c=>{if(c.isMesh&&c.material){c.material.wireframe=wireEnabled;c.material.needsUpdate=true;}});
+ if(model)model.traverse(c=>{if(c.isMesh&&c.material){c.material.wireframe=wireEnabled;c.material.needsUpdate=true; if(c.userData.isTextured){c.userData.clearMat.wireframe=wireEnabled;c.userData.litMat.wireframe=wireEnabled;}}});
 };
 const setZoom=(factor)=>{let delta=camera.position.clone().sub(controls.target).multiplyScalar(factor);camera.position.copy(controls.target).add(delta);controls.update()};
 document.querySelector('#closer').onclick=()=>setZoom(.82);
