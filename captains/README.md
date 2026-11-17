@@ -1,34 +1,42 @@
-# VOLT KICK — KAIRO FLUX (NEÓN)
+# VOLT KICK — Kairo Flux (NEÓN)
 
-**Vista interactiva actual:** https://mandelasmith704-ai.github.io/volt-kick/captains/kairo-flux.html
+## Modelo actual: V4.1 — Pase de detalle y limpieza
 
-## Estado: V3 — Reconstrucción volumétrica a partir del arte aprobado
+**Visor interactivo:** https://mandelasmith704-ai.github.io/volt-kick/captains/kairo-flux.html?v=41
 
-Se reconstruyó el volumen 3D usando las siluetas de las vistas frontal y lateral del diseño maestro y se aplicaron las tres vistas de la ilustración como textura proyectada. Esto permite ver a Kairo desde diferentes ángulos con mayor semejanza visual al concepto: rostro, rayo del pecho, uniforme 07, hombreras, guantes y espinilleras.
+### Entregable actual
 
-### Entregable principal
-- **[Kairo Flux V3 texturizado (GLB, 2.58 MB)](assets/kairo-flux-v3-textured.glb)**: malla 3D continua y texturizada, altura aproximadamente 1.86 m.
-- [Visor web de Kairo Flux](kairo-flux.html): giro libre, vistas ortogonales aproximadas, acercamiento al rostro y modo de malla.
-- [Kairo Flux V2 anterior](assets/kairo-flux-v2.glb): conservado como respaldo.
+- [Kairo V4.1 · GLB (2.17 MB)](assets/kairo-flux-v4-1-cleanup.glb) — modelo tridimensional estático, con la reconstrucción texturizada de V3 y piezas nuevas de detalle
+- [Visor 3D](kairo-flux.html) — comparador V4.1 y V3, giro libre, acercamiento de rostro y modo alambre
+- [V4 inicial (conservada)](assets/kairo-flux-v4-detail-pass.glb)
+- [V3 texturizada (conservada)](assets/kairo-flux-v3-textured.glb)
+- [V2 anterior (conservada)](assets/kairo-flux-v2.glb)
 
-### Verificación técnica local
-- **85,232 triángulos**, alrededor de **45,462 vértices** después de separar las coordenadas de textura.
-- Malla volumétrica cerrada según verificación de Trimesh (`is_watertight`).
-- Textura derivada de las vistas aprobadas, no inventada para sustituir el diseño.
-- GLB exportado y renderizado desde frente, perfil y espalda en una prueba local con VTK.
-- Archivo GLB y actualización de visor subidos al repositorio y verificados.
-- Esta prueba **no equivale** a compilar el proyecto en Unity ni a inspección visual en todos los navegadores.
+### Cambios realizados respecto a V3
 
-### Limitaciones IMPORTANTES
-Este modelo es una **aproximación volumétrica multivista**, no una escultura tridimensional artística lista para producción. Las vistas de referencia solo muestran 3 ángulos; hay costuras visibles en transiciones y detalles de la superficie que requieren reconstrucción manual. No tiene rig humanoide, texturas PBR separadas, UVs propias de producción, expresiones animadas ni optimización LOD.
+1. Geometría independiente de cabello angular, con mechones cortos y acentos azules
+2. Trazo eléctrico ligeramente volumétrico sobre la mejilla izquierda
+3. Capas de protección en hombros y guanteletes, con líneas luminosas
+4. Elementos adicionales en espinilleras y botas
+5. Limpieza de **890 triángulos** de pequeños fragmentos desconectados de la proyección original
+6. Materiales diferenciados (azules, titanio, piel, cabello y emisivos), manteniendo la textura aprobada en el cuerpo
 
-**Más polígonos no significan automáticamente más calidad.** Nuestra prioridad es el parecido facial y de silueta, consistencia entre vistas, retopología correcta, texturas artísticas y animación.
+### Verificaciones técnicas realizadas
 
-### Próximo paso real de producción
-1. Corregir anatomía, profundidad y cabello en una herramienta de escultura 3D (Blender o un generador especializado con revisión).
-2. Retopología y UVs propias, material PBR para tela/piel/metal/energía.
-3. Rig y peso de vértices para caminar, correr, girar y chutar.
-4. Aplicar LOD y optimizar para iOS; pruebas de rendimiento.
-5. Integrar este capitán dentro de Unity, y después continuar con los otros cuatro capitanes.
+- **100,872 triángulos** en **56 mallas** (una malla base + 55 piezas)
+- **53,085 vértices** después de las operaciones de geometría y UV
+- GLB de **2.17 MB**, generado y reimportado satisfactoriamente con Trimesh
+- Render real de frente, perfil y espalda en VTK
+- JavaScript del visor verificado sintácticamente
+- Archivo y visor subidos a GitHub
+- El modelo base **no es completamente hermético** (`is_watertight = false`): quedan aberturas y transiciones que necesitan reconstrucción; el modelo **no está listo para rigging**
 
-**Alcance:** solo el personaje Kairo Flux. No se ha modificado el partido, la cancha ni la afición.
+### Limitaciones que siguen pendientes
+
+La reconstrucción fototexturizada sigue teniendo costuras y errores de profundidad entre las distintas vistas, especialmente en perfil. Las piezas de detalle V4.1 son adiciones independientes y no reemplazan la necesidad de modelado orgánico supervisado. El rostro no es una escultura manual de alta fidelidad, no hay materiales PBR pintados con UV propias, y tampoco hay esqueleto, pesos, animaciones, LOD ni validación de rendimiento iOS.
+
+**Más polígonos no equivalen a calidad AAA.** La ruta de producción de Kairo pasa por reconstruir una malla limpia en Blender u otra herramienta 3D especializada, mejorar rostro/cabello, retopología, UV y materiales, rig y animaciones, y probar en Unity.
+
+### Alcance
+
+Solo Kairo Flux. No se modificaron los demás capitanes, la cancha, el partido ni la afición. Evitar mezclar esta maqueta con el personaje comercial definitivo.
