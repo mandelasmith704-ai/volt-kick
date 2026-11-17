@@ -1,6 +1,6 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>VOLT KICK | Kairo Flux — V4 Detallado</title>
+<title>VOLT KICK | Kairo Flux — V4.1 Refinado</title>
 <meta name="theme-color" content="#071324">
 <style>
 :root{color-scheme:dark;font:14px system-ui,-apple-system,Segoe UI,sans-serif;background:#020918;color:#eefbff}
@@ -35,22 +35,22 @@ a{color:#79f1ff}#state{color:#9eeaff;font-size:12px;font-weight:800;padding:9px 
 <div class="brand">VOLT <b>KICK</b></div>
 <h1>KAIRO <b>FLUX</b></h1>
 <div class="tag">NEÓN · EL RELÁMPAGO · DORSAL 07</div>
-<p>Maqueta V4 con detalles 3D adicionales de cabello, marca eléctrica en el rostro, hombros, guantes, espinilleras y botas. Conserva la reconstrucción texturizada anterior y permite compararla con la V3. Gira el personaje para evaluar los cambios.</p>
+<p>Maqueta V4.1 con limpieza de fragmentos y detalles 3D adicionales de cabello, marca eléctrica en el rostro, hombros, guantes, espinilleras y botas. Conserva la reconstrucción texturizada anterior y permite compararla con la V3. Gira el personaje para evaluar los cambios.</p>
 <div class="stat"><span>VELOCIDAD</span><span>★★★★★</span></div>
 <div class="stat"><span>AGILIDAD</span><span>★★★★☆</span></div>
 <div class="stat"><span>FUERZA</span><span>★★☆☆☆</span></div>
 <div class="controls" aria-label="Comparar versiones">
-<button data-version="4" class="active">V4 · NUEVA</button><button data-version="3">V3 · ANTERIOR</button>
+<button data-version="4" class="active">V4.1 · REFINADA</button><button data-version="3">V3 · ANTERIOR</button>
 </div>
 <div class="controls">
 <button data-angle="0" class="active">FRENTE</button><button data-angle="1.570796">PERFIL</button><button data-angle="3.14159">ESPALDA</button>
 </div>
 <div class="controls"><button id="rotate">↻ GIRO</button><button id="light">⚡ ENERGÍA</button><button id="wire">◈ MALLA</button><button id="face">👁 ROSTRO</button><button id="body">CUERPO</button><button id="closer">＋ ZOOM</button><button id="further">－ ZOOM</button></div>
 <div id="state">Cargando modelo 3D...</div>
-<p class="note">V4: 101,762 triángulos, incluyendo 55 piezas decorativas nuevas. Se conserva la V3 (85,232 triángulos) para comparar. Ambas siguen sin esqueleto ni animaciones; la textura proyectada mantiene defectos de unión y no equivale a un modelo profesional terminado.</p>
+<p class="note">V4.1: 100,872 triángulos con 55 piezas decorativas; se retiraron 890 triángulos de fragmentos pequeños desconectados. Conservamos V3 (85,232 triángulos) para comparar. Aún hay costuras de proyección y no existe rig ni animación. Es un prototipo, no un personaje comercial terminado.</p>
 <a href="../">← Regresar al partido</a>
 </div>
-<div id="hud">CAPTAIN 01 · KAIRO FLUX V4<br>CHARACTER DEVELOPMENT / WIP</div>
+<div id="hud">CAPTAIN 01 · KAIRO FLUX V4.1<br>CHARACTER DEVELOPMENT / WIP</div>
 <div id="hint">Arrastra para girar · Rueda del mouse o dedos para acercar y alejar</div>
 <script type="module">
 import * as THREE from 'three';
@@ -85,7 +85,7 @@ const sparks=[];for(let i=0;i<16;i++){
 }
 let model=null,energy=true,loadSequence=0,wireEnabled=false;
 const available={
-  '4':{file:'./assets/kairo-flux-v4-detail-pass.glb',label:'V4 · 101,762 triángulos · 55 detalles adicionales'},
+  '4':{file:'./assets/kairo-flux-v4-1-cleanup.glb?v=41',label:'V4.1 · 100,872 triángulos · limpieza de proyección y detalles'},
   '3':{file:'./assets/kairo-flux-v3-textured.glb',label:'V3 · 85,232 triángulos · reconstrucción texturizada'}
 };
 async function loadModel(ver){
